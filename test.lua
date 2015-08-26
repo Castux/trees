@@ -1,14 +1,15 @@
-require "trees"
+require "tree"
+require "graph"
 
-count = 0
+foo = make_all_trees(6)[7]
 
-for size = 1,5 do
+print("Orig", foo.namestring)
 
-	local trees = make_all_trees(size)
+bar = tree_to_graph(foo)
 
-	for i,tree in ipairs(trees) do
-		count = count + 1
-		print(count, tree.namestring)
-	end
 
+meh = graph_to_all_trees(bar)
+
+for i,v in ipairs(meh) do
+	print(v.namestring)
 end
