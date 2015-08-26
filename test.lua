@@ -1,15 +1,9 @@
 require "tree"
 require "graph"
+require "free"
 
-foo = make_all_trees(6)[7]
+res = make_all_free_trees(8)
 
-print("Orig", foo.namestring)
-
-bar = tree_to_graph(foo)
-
-
-meh = graph_to_all_trees(bar)
-
-for i,v in ipairs(meh) do
-	print(v.namestring)
+for i,t in ipairs(res) do
+	print(t.namestring)
 end
