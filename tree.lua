@@ -40,10 +40,12 @@ function make_tree(children)
 
 	local size = 1
 	local name = {1}
+	local curlies = {}
 
 	for i,child in ipairs(tree.children) do
 		size = size + child.size
 		append_array(name, child.name)
+		table.insert(curlies, child.curly)
 	end
 
 	tree.size = size
@@ -51,6 +53,7 @@ function make_tree(children)
 
 	tree.name = name
 	tree.namestring = name_to_namestring(name)
+	tree.curly = "{" .. table.concat(curlies, ",") .. "}"
 
 	-- internize
 
