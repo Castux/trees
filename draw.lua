@@ -204,14 +204,11 @@ function tree_to_svg(tree, standalone)
 		svg = string.format(svg_inline_header, w, h)
 	end
 
-	svg = svg .. '<g fill="black">\n'
+	svg = svg .. '<g fill="black" stroke="black" stroke-width="2">\n'
 
 	for _,node in ipairs(nodes) do
 		svg = svg .. string.format('<circle cx="%d" cy="%d" r="5" />\n', node.x, node.y)
 	end
-
-	svg = svg .. '</g>\n'
-	svg = svg .. '<g stroke="black" stroke-width="2">\n'
 
 	for _,node in ipairs(nodes) do
 		for _,neighbour in ipairs(node) do
