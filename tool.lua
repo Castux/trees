@@ -4,7 +4,7 @@ config = {
 	N = 10,
 	titles = true,
 	type = "free",
-	ouput = "names"
+	output = "names"
 }
 
 -- command line parsing
@@ -13,12 +13,14 @@ args = {...}
 
 usage_text = [[
 Free tree generator. Usage:
-lua tool.lua [-N size] [--notitles]
+lua tool.lua [-N size] [--rooted] [--notitles] [--luatables]
+lua tool.lua [-h | --help]
 
 -N size:	generate trees up to size N
---notitles:	output only the trees, no formating
 --rooted:	generate rooted trees instead of free trees
+--notitles:	output only the trees, no formating
 --luatables	output trees as Lua tables
+--help, -h:	display this help
 ]]
 
 for i,v in ipairs(args) do
