@@ -98,6 +98,38 @@ function sort_trees_decr(array)
 	table.sort(array, compare_trees_decr)
 end
 
+------------------
+-- Name to tree --
+------------------
+
+function name_to_tree(name)
+
+	local function rec(index)
+
+		if index > #name then
+			return nil
+		end
+
+		local size = name[index]
+		local children = {}
+		local iter = index + 1
+
+		while iter < index + size do
+			local child = rec(iter)
+
+			if not child then
+				return nil
+			end
+
+			iter = iter + child.size
+			table.insert(children, child)
+		end
+
+		return make_tree(children)
+	end
+
+	return rec(1)
+end
 
 ----------------
 -- Generation --
