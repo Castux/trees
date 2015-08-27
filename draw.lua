@@ -154,7 +154,19 @@ end
 -- SVG output --
 ----------------
 
-function tree_to_svg(tree)
+local svg_header = [[
+<?xml version="1.0" encoding="utf-8"?>
+<svg
+	xmlns="http://www.w3.org/2000/svg" 
+	version="1.1"
+	width = "%d"
+	height = "%d">
+<title>%s</title>
+]]
+
+local svg_inline_header = '<svg width="%d" height="%d">\n'
+
+function tree_to_svg(tree, standalone)
 
 	local nodes = layout_tree(tree)
 
@@ -184,29 +196,33 @@ function tree_to_svg(tree)
 
 	-- Write SVG
 
-	svg = [[
-<?xml version="1.0" encoding="utf-8"?>
-<svg
-	xmlns="http://www.w3.org/2000/svg" 
-	version="1.1"
-]]
+	local svg
 
-	svg = svg .. '\twidth="' .. w .. '"\n'
-	svg = svg .. '\theight="' .. h .. '">\n'
-	
-	svg = svg .. '\t<title>' .. tree.namestring .. '</title>\n'
+	if standalone then
+		svg = string.format(svg_header, w, h, tree.namestring)
+	else
+		svg = string.format(svg_inline_header, w, h)
+	end
+
+	svg = svg .. '<g fill="black">\n'
 
 	for _,node in ipairs(nodes) do
-		svg = svg .. string.format('<circle cx="%d" cy="%d" r="5" fill="black" />\n', node.x, node.y)
+		svg = svg .. string.format('<circle cx="%d" cy="%d" r="5" />\n', node.x, node.y)
+	end
 
+	svg = svg .. '</g>\n'
+	svg = svg .. '<g stroke="black" stroke-width="2">\n'
+
+	for _,node in ipairs(nodes) do
 		for _,neighbour in ipairs(node) do
 			if node.id < neighbour.id then
-				svg = svg .. string.format('<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="black" stroke-width="2" />\n',
+				svg = svg .. string.format('<line x1="%d" y1="%d" x2="%d" y2="%d" />\n',
 					node.x, node.y, neighbour.x, neighbour.y)
 			end
 		end
 	end
 
+	svg = svg .. '</g>\n'
 	svg = svg .. '</svg>'
 
 	return svg
