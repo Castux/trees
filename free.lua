@@ -1,6 +1,14 @@
 require "tree"
 require "graph"
 
+--------------------------
+-- Free tree generation --
+--------------------------
+
+-- We simply generate all trees of the given size
+-- and sort them into equivalent classes, then pick
+-- only one tree per class (the biggest)
+
 local gTreeToClass = {}
 
 function classify_trees(trees)

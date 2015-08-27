@@ -12,13 +12,20 @@ end
 -- Tree structure --
 --------------------
 
+-- All trees are internized, and immutable
+-- That way we can reuse trees in bigger trees
+-- and save a lot of memory and processing (no
+-- need to copy trees, ever)
+
 local gTrees = {}	-- indexed by namestring
 
 function name_to_namestring(name)
 	return table.concat(name, "-")
 end
 
--- build tree out of list of children
+-- Build tree out of list of children
+-- The list will used directly and sorted
+-- Pass nil or an empty list to make the 1 tree
 
 function make_tree(children)
 
@@ -55,6 +62,9 @@ function make_tree(children)
 	return gTrees[tree.namestring]
 end
 
+-- The sorting order used throughout the library
+-- is decreasing, for esthetic purposes
+
 function sort_trees(array)
 
 	table.sort(array, function(a,b)
@@ -65,6 +75,11 @@ end
 ----------------
 -- Generation --
 ----------------
+
+-- Generation is done bottom up: to make all trees of size N,
+-- build all forests of size N-1 and set them as children of new trees.
+-- Forest generation is recursive too: match all trees of size k with all
+-- forests of size N-k, with k from 1 to N, forgetting duplicates on the way.
 
 local one = make_tree()
 

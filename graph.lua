@@ -1,3 +1,14 @@
+-----------
+-- Graph --
+-----------
+
+-- A graph is a list of nodes
+-- A node is a list of its neighbour nodes
+
+-- We use this representation to build classes
+-- of rooted trees that have the same free tree
+-- equivalent
+
 function tree_to_graph(tree)
 
 	local g = {}	-- list of nodes
