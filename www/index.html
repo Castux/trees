@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>A bunch of dots</title>
+</head>
+
+<body>
+	<h1>A bunch of dots</h1>
+	
+	<p>A collection of all free trees up to size 15 (all 13188 of them), as SVG images, as well as an explanation of how they were generated.</p>
+	
+	<div>
+	<span><object data="img/1.svg" type="image/svg+xml">These pages use images in the SVG format. If you can read this, you browser probably doesn't support SVG rendering. Of course, you can still visit the pages, but without images they might be pretty boring...</object></span>
+	<span><object data="img/2-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/3-2-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/4-3-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/4-3-2-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/5-4-1-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/5-4-3-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/5-4-3-2-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/6-5-1-1-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/6-5-3-1-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/6-5-4-1-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/6-5-4-2-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/6-5-4-3-1-1.svg" type="image/svg+xml" /></span>
+	<span><object data="img/6-5-4-3-2-1.svg" type="image/svg+xml" /></span>
+	</div>
+	
+	
+	<h2>Short summary</h2>
+	<p>Trees are represented in memory as ordered rooted trees (the "standard" recursive tree representation: a tree is a list of children trees). They are also "named" by labeling each subtree with its size and writing down these labels in prefix depth-first traversal order. We define a total order on these trees as the lexicographic order of their names.</p>
+	
+	<p>Ordered rooted trees are "canonized" into rooted trees by sorting the children trees in decreasing order.</p>
+	
+	<p>A free tree is represented as the biggest equivalent rooted tree.</p>
+	
+	<h2>Longer and more friendly description</h2>
+	
+	<p><a href="info.xhtml">So really, what is this all about?</a></p>
+	
+	
+	<h1>The results</h1>
+	
+	<h2>Graphical lists</h2>
+	
+	<p>(Note that they might take a few minutes to load and render)</p>
+	
+	<p><a href="1-10.xhtml">Sizes 1 to 10</a></p>
+	<p><a href="11-12.xhtml">Sizes 11 to 12</a></p>
+	<p><a href="13.xhtml">Size 13</a></p>
+	<p><a href="14a.xhtml">Size 14 (part 1)</a> <a href="14b.xhtml">(part 2)</a></p>
+	<p><a href="15a.xhtml">Size 15 (part 1)</a> <a href="15b.xhtml">(part 2)</a> <a href="15c.xhtml">(part 3)</a> <a href="15d.xhtml">(part 4)</a> <a href="15e.xhtml">(part 5)</a></p>
+	
+	<h2>Text lists</h2>
+	
+	<p><a href="free15.txt">Tree representation</a></p>
+	<p><a href="free15names.txt">Name representation</a></p>
+	<p><a href="free15lua.txt">Both tree and name representation in valid Lua code</a></p>
+	
+	<h2>Downloads</h2>
+	
+	<p>Source code. It is very messy and would need a complete rewrite, but it's here for information purposes: <a href="trees-src.tar.gz">tar.gz</a> <a href="trees-src.zip">zip</a></p>
+	<p>Compressed archive of all SVG images: <a href="free15svg.tar.gz">tar.gz</a> <a href="free15svg.zip">zip</a></p>
+	
+</body>
+</html>
