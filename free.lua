@@ -49,7 +49,7 @@ function make_all_free_trees(size)
 	local classes = classify_trees(trees)
 
 	for _,class in ipairs(classes) do
-		table.insert(result, class[1])
+		table.insert(result, class[#class])
 	end
 
 	gFreeTrees[size] = result

@@ -34,8 +34,7 @@ function make_tree(children)
 	-- add children in decreasing order
 
 	tree.children = children or {}
-
-	sort_trees(tree.children)
+	sort_trees_decr(tree.children)
 
 	-- build name and compute size
 
@@ -63,14 +62,39 @@ function make_tree(children)
 end
 
 -- The sorting order used throughout the library
--- is decreasing, for esthetic purposes
+
+function compare_trees(a,b)
+
+	if a == b then
+		return false
+	end
+
+	for i = 1, math.max(a.size, b.size) do
+		
+		if a.name[i] == nil then
+			return true
+		elseif b.name[i] == nil then
+			return false
+		elseif a.name[i] ~= b.name[i] then
+			return a.name[i] < b.name[i]
+		end
+	end
+
+	return false
+end
+
+function compare_trees_decr(a,b)
+	return compare_trees(b,a)
+end
 
 function sort_trees(array)
-
-	table.sort(array, function(a,b)
-		return a.namestring > b.namestring
-	end)
+	table.sort(array, compare_trees)
 end
+
+function sort_trees_decr(array)
+	table.sort(array, compare_trees_decr)
+end
+
 
 ----------------
 -- Generation --
@@ -134,7 +158,6 @@ function make_all_forests(size)
 				append_array(tmp, forest)
 
 				table.insert(result, tmp)
-
 			end
 		end
 
