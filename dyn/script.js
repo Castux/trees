@@ -230,9 +230,10 @@ function setup3D()
 	renderer = new THREE.WebGLRenderer(params);
 	renderer.setSize(400, 400);
 
-	sphereGeom = new THREE.SphereGeometry(5, 10, 10);
+	sphereGeom = new THREE.SphereGeometry(5, 32, 32);
 	material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-	lineGeom = new THREE.CylinderGeometry(2, 2, 1);
+	material = new THREE.MeshLambertMaterial();
+	lineGeom = new THREE.CylinderGeometry(2, 2, 1, 32);
 }
 
 function randomPoint3D()
@@ -249,9 +250,17 @@ function prepareSimulation3D()
 	camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 	scene.add(camera);
 
+	var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+	directionalLight.position.x = 30;
+	directionalLight.position.y = 30;
+	scene.add(directionalLight);
+
+	var ambiant = new THREE.AmbientLight( 0x404040 ); // soft white light
+	scene.add(ambiant);
+
 	for(let index of indices)
 	{		
-		let sphere = new THREE.Mesh(sphereGeom);
+		let sphere = new THREE.Mesh(sphereGeom, material);
 		sphere.position.copy(randomPoint3D());
 		spheres[index] = sphere;
 		scene.add(sphere);
@@ -262,7 +271,7 @@ function prepareSimulation3D()
 	for(let h in matrix)
 	{
 		let pair = matrix[h];
-		let cyl = new THREE.Mesh(lineGeom);
+		let cyl = new THREE.Mesh(lineGeom, material);
 		lines[h] = cyl;
 		scene.add(cyl);
 	}
