@@ -10,8 +10,10 @@ function main()
 	textBox.onchange = onInputChange;
 
 	drawing = document.getElementById("drawing");
+	drawing.onclick = update;
 
 	onInputChange();
+	update();
 }
 
 function onInputChange()
@@ -21,9 +23,23 @@ function onInputChange()
 	draw();
 }
 
+function update()
+{
+	console.log("update");
+	iterate();
+	draw();
+	window.requestAnimationFrame(update);
+}
+
 function hash(pair)
 {
+	pair = pair.sort();
 	return pair[0] + ":" + pair[1];
+}
+
+function neighbours(i,j)
+{
+	return matrix[hash([i,j])] != null;
 }
 
 function handleInput()
@@ -64,7 +80,57 @@ function prepareSimulation()
 
 function iterate()
 {
+	let K = 0.3;
+	let L = 20;
 
+	let alpha = 0.75;
+
+	// Compute
+
+	let forces = {};
+
+	for(let i of indices)
+	{
+		let fx = 0;
+		let fy = 0;
+
+		for(let j of indices)
+		{
+			if(i == j)
+				continue;
+
+			let a = points[i];
+			let b = points[j];
+
+			let dx = b[0] - a[0];
+			let dy = b[1] - a[1];
+			let d = Math.sqrt(dx * dx + dy * dy);
+
+			let f = 0;
+
+			if(neighbours(i,j))
+			{
+				f = - K * (d - L);
+			}
+			else
+			{
+				f = 20 * K / d;
+			}
+
+			fx -= f * dx/d;
+			fy -= f * dy/d;
+		}
+
+		forces[i] = [fx, fy];
+	}
+
+	// Apply
+
+	for(let i of indices)
+	{
+		points[i][0] += forces[i][0] * alpha;
+		points[i][1] += forces[i][1] * alpha;
+	}
 }
 
 function addDot(pos)
