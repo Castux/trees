@@ -77,3 +77,25 @@ function graph_to_all_trees(graph)
 
 	return result
 end
+
+function tree_to_edges(tree)
+	
+	local edges = {}
+	local index = 0
+	
+	local function rec(tree)
+		
+		index = index + 1
+		local thisIndex = index
+		
+		for i,child in ipairs(tree.children) do
+			local childIndex = rec(child)
+			table.insert(edges, {thisIndex, childIndex})
+		end
+		
+		return thisIndex
+	end
+	
+	rec(tree)
+	return edges
+end

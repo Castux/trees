@@ -39,6 +39,9 @@ for i,v in ipairs(args) do
 	
 	elseif v == "--luatables" then
 		config.output = "tables"
+		
+	elseif v == "--graphs" then
+		config.output = "graphs"
 
 	elseif v == "--help" or v == "-h" then
 		print(usage_text)
@@ -66,7 +69,23 @@ for i = 1,config.N do
 	end
 
 	for _,tree in ipairs(trees) do
-		print(config.output == "names" and tree.namestring or tree.curly)
+		
+		if config.output == "name" then
+			print(tree.namestring)
+			
+		elseif config.output == "tables" then
+			print(tree.curly)
+			
+		elseif config.output == "graphs" then
+			local edges = tree_to_edges(tree)
+			
+			local res = ""
+			for i,v in ipairs(edges) do
+				res = res .. "(" .. v[1] .. "," .. v[2] .. ")"
+			end
+			
+			print(res)
+		end
 	end
 
 	if config.titles then
