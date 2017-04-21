@@ -10,8 +10,9 @@ function main()
 	textBox.onchange = onInputChange;
 
 	drawing = document.getElementById("drawing");
-	drawing.onclick = update;
+	drawing.onclick = onInputChange;
 
+	setup3D();
 	onInputChange();
 	update();
 }
@@ -20,15 +21,23 @@ function onInputChange()
 {
 	handleInput();
 	prepareSimulation();
-	draw();
+	prepareSimulation3D();
 }
 
 function update()
 {
-	console.log("update");
 	iterate();
 	draw();
+
+	iterate3D();
+	draw3D();
+
 	window.requestAnimationFrame(update);
+}
+
+function getFloat(name)
+{
+	return parseFloat(document.getElementById(name).value);
 }
 
 function hash(pair)
@@ -80,10 +89,9 @@ function prepareSimulation()
 
 function iterate()
 {
-	let K = 0.3;
-	let L = 20;
-
-	let alpha = 0.75;
+	let K = getFloat("K");
+	let L = getFloat("L");
+	let alpha = getFloat("alpha");
 
 	// Compute
 
@@ -181,18 +189,19 @@ function draw()
 	drawing.innerHTML = "";
 
 	let margin = 30;
+	let w = 400;
 
 	let bounds = findBounds();
-	let w = bounds[1] - bounds[0] + 2 * margin;
-	let h = bounds[3] - bounds[2] + 2 * margin;
+	let cx = (bounds[1] + bounds[0])/2;
+	let cy = (bounds[3] + bounds[2])/2;
 
 	drawing.setAttribute('width', w);
-	drawing.setAttribute('height', h);
+	drawing.setAttribute('height', w);
 
 	for(let index of indices)
 	{
-		points[index][0] -= bounds[0] - margin;
-		points[index][1] -= bounds[2] - margin;
+		points[index][0] += w / 2 - cx;
+		points[index][1] += w / 2 - cy;
 		addDot(points[index]);
 	}
 	
@@ -201,4 +210,128 @@ function draw()
 		let pair = matrix[key];
 		addLine(points[pair[0]], points[pair[1]]);
 	}
+}
+
+// Threedee
+
+var scene;
+var camera;
+var renderer;
+
+var sphereGeom;
+var material;
+
+var spheres;
+
+function setup3D()
+{
+	let params = {canvas: document.getElementById("3ddrawing")};
+	renderer = new THREE.WebGLRenderer(params);
+	renderer.setSize(400, 400);
+
+	sphereGeom = new THREE.SphereGeometry(5, 10, 10);
+	material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+}
+
+function randomPoint3D()
+{
+	return new THREE.Vector3(Math.random() * 100, Math.random() * 100, Math.random() * 100);
+}
+
+function prepareSimulation3D()
+{
+	points3D = {};
+	spheres = {};
+
+	scene =	new THREE.Scene();
+	camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+	scene.add(camera);
+
+	for(let index of indices)
+	{		
+		let sphere = new THREE.Mesh(sphereGeom);
+		sphere.position.copy(randomPoint3D());
+		spheres[index] = sphere;
+		scene.add(sphere);
+	}
+}
+
+function iterate3D()
+{
+	let K = getFloat("K");
+	let L = getFloat("L");
+	let alpha = getFloat("alpha");
+
+	// Compute
+
+	let forces = {};
+
+	for(let i of indices)
+	{
+		let f = new THREE.Vector3();
+
+		for(let j of indices)
+		{
+			if(i == j)
+				continue;
+
+			let a = spheres[i].position;
+			let b = spheres[j].position;
+
+			let delta = b.clone().sub(a);
+			let d = delta.length();
+			delta.normalize();
+
+			let intensity = 0;
+
+			if(neighbours(i,j))
+			{
+				intensity = - K * (d - L);
+			}
+			else
+			{
+				intensity = 20 * K / d;
+			}
+
+			delta.multiplyScalar(intensity).negate();
+
+			f.add(delta);
+		}
+
+		forces[i] = f;
+	}
+
+	// Apply
+
+	for(let i of indices)
+	{
+		spheres[i].position.add(forces[i].multiplyScalar(alpha));
+	}	
+}
+
+var t = 0;
+
+function draw3D()
+{
+	t++;
+	let R = 150;
+
+	// auto camera
+
+	let center = new THREE.Vector3();
+
+	for(let index of indices)
+	{
+		center.add(spheres[index].position);
+	}
+
+	center.divideScalar(indices.size);
+
+	let phi = t / (60 * 10) * Math.PI * 2;
+	let pos = center.clone().add(new THREE.Vector3(R * Math.cos(phi), 0, R * Math.sin(phi)));
+
+	camera.position.copy(pos);
+	camera.lookAt(center);
+
+	renderer.render(scene, camera);
 }
