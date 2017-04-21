@@ -222,6 +222,7 @@ var sphereGeom;
 var material;
 
 var spheres;
+var lines;
 
 function setup3D()
 {
@@ -231,6 +232,7 @@ function setup3D()
 
 	sphereGeom = new THREE.SphereGeometry(5, 10, 10);
 	material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+	lineGeom = new THREE.CylinderGeometry(2, 2, 1);
 }
 
 function randomPoint3D()
@@ -253,6 +255,16 @@ function prepareSimulation3D()
 		sphere.position.copy(randomPoint3D());
 		spheres[index] = sphere;
 		scene.add(sphere);
+	}
+
+	lines = {};
+
+	for(let h in matrix)
+	{
+		let pair = matrix[h];
+		let cyl = new THREE.Mesh(lineGeom);
+		lines[h] = cyl;
+		scene.add(cyl);
 	}
 }
 
@@ -306,7 +318,26 @@ function iterate3D()
 	for(let i of indices)
 	{
 		spheres[i].position.add(forces[i].multiplyScalar(alpha));
-	}	
+	}
+
+	// Update lines
+
+	for(let h in matrix)
+	{
+		let cyl = lines[h];
+		let pair = matrix[h];
+
+		let a = spheres[pair[0]].position;
+		let b = spheres[pair[1]].position;
+
+		let d = b.distanceTo(a);
+		let center = a.clone().add(b).divideScalar(2);
+
+		cyl.position.copy(center);
+		cyl.lookAt(b);
+		cyl.rotateX(Math.PI/2);
+		cyl.scale.setY(d);
+	}
 }
 
 var t = 0;
