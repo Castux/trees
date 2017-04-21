@@ -226,7 +226,7 @@ var lines;
 
 function setup3D()
 {
-	let params = {canvas: document.getElementById("3ddrawing")};
+	let params = {canvas: document.getElementById("3ddrawing"), antialias: true};
 	renderer = new THREE.WebGLRenderer(params);
 	renderer.setSize(400, 400);
 
@@ -302,7 +302,7 @@ function iterate3D()
 			}
 			else
 			{
-				intensity = 20 * K / d;
+				intensity = 40 * K / d;
 			}
 
 			delta.multiplyScalar(intensity).negate();
@@ -345,7 +345,7 @@ var t = 0;
 function draw3D()
 {
 	t++;
-	let R = 150;
+	let R = getFloat("R");
 
 	// auto camera
 
