@@ -130,29 +130,11 @@ function printAll()
 	print(table.concat(res))
 end
 
-function makeDot()
-	local res = {}
-	
-	table.insert(res, "graph G {")
-	table.insert(res, "graph [ dimen=3 ];")
-	
-	for i,v in ipairs(edges) do
-		table.insert(res, string.format("%s -- %s;", v[1], v[2]))
-	end
-	
-	table.insert(res, "}")
-	
-	local fp = io.open("out.dot", "w")
-	fp:write(table.concat(res, "\n"))
-	fp:close()
-end
-
 -- Prog!
 
 firstLayer(vertices[0][1][1], vertices[1])
 iter()
 iter()
---iter()
+iter()
 
 printAll()
-makeDot()

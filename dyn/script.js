@@ -151,7 +151,6 @@ function iterate()
 {
 	let K = getFloat("K");
 	let L = getFloat("L");
-	let alpha = getFloat("alpha");
 
 	// Compute
 
@@ -193,8 +192,8 @@ function iterate()
 
 	for(let i of indices)
 	{
-		points[i][0] += forces[i][0] * alpha;
-		points[i][1] += forces[i][1] * alpha;
+		points[i][0] += forces[i][0];
+		points[i][1] += forces[i][1];
 	}
 }
 
@@ -338,7 +337,6 @@ function iterate3D()
 {
 	let K = getFloat("K");
 	let L = getFloat("L");
-	let alpha = getFloat("alpha");
 
 	// Compute
 
@@ -377,7 +375,7 @@ function iterate3D()
 
 	for(let i of indices)
 	{
-		spheres[i].position.add(forces[i].multiplyScalar(alpha));
+		spheres[i].position.add(forces[i]);
 	}
 
 	// Update lines
