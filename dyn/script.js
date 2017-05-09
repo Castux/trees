@@ -100,7 +100,7 @@ function computeDistances()
 
 	// Rec
 
-	for(let iter = 0; iter < 3; iter++)
+	for(let iter = 0; iter < 2; iter++)
 	{
 		for(let i of indices)
 		{
