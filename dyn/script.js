@@ -26,8 +26,8 @@ function onInputChange()
 
 function update()
 {
-	iterate();
-	draw();
+	//iterate();
+	//draw();
 
 	iterate3D();
 	draw3D();
@@ -77,7 +77,42 @@ function handleInput()
 		matrix[hash(pair)] = pair;
 	}
 
+	computeNeighbours();
 	computeDistances();
+}
+
+var neighbourList;
+
+function computeNeighbours()
+{
+	neighbourList = {};
+
+	for(let i of indices)
+	{
+		neighbourList[i] = [];
+	}
+
+	for(let h in matrix)
+	{
+		let pair = matrix[h];
+
+		neighbourList[pair[0]].push(pair[1]);
+		neighbourList[pair[1]].push(pair[0]);
+	}
+
+	console.log(neighbourList);
+}
+
+function neighbourRing(start, level)
+{
+	let current = [start];
+
+	for(let i = 0; i < level; i++)
+	{
+		current = current.map(k => neighbourList[k]).reduce((a,b) => a.concat(b), []);
+	}
+
+	return current;
 }
 
 var distances;
@@ -86,47 +121,36 @@ function computeDistances()
 {
 	distances = {};
 
-	// init
-
-	for(let h in matrix)
-	{
-		distances[h] = 1;
-	}
-
 	for(let i of indices)
 	{
+		let visited = new Set();
+
+		visited.add(i);
 		distances[hash([i,i])] = 0;
-	}
 
-	// Rec
+		let current = [i];
+		let level = 1;
 
-	for(let iter = 0; iter < 2; iter++)
-	{
-		for(let i of indices)
+		while(visited.size < indices.size)
 		{
-			for(let j of indices)
+			let next = [];
+
+			for(let j of current)
 			{
-				if (i == j)
-					continue;
-
-				let current = distances[hash([i,j])];
-
-				if(current == null)
-					current = Infinity;
-
-				for(let k of indices)
+				for(let k of neighbourList[j])
 				{
-					let first = distances[hash([i,k])];
-					let second = distances[hash([k,j])];
+					if(visited.has(k))
+						continue;
 
-					if(first != null && second != null && first + second < current)
-					{
-						current = first + second;
-					}
+					distances[hash([i,k])] = level;
+
+					visited.add(k);
+					next.push(k);
 				}
-
-				distances[hash([i,j])] = current;
 			}
+
+			current = next;
+			level++;
 		}
 	}
 
