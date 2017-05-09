@@ -51,6 +51,11 @@ function neighbours(i,j)
 	return matrix[hash([i,j])] != null;
 }
 
+function distance(i,j)
+{
+	return distances[hash([i,j])];
+}
+
 function handleInput()
 {
 	var txt = textBox.value;
@@ -71,6 +76,61 @@ function handleInput()
 		let pair = [i1,i2].sort();
 		matrix[hash(pair)] = pair;
 	}
+
+	computeDistances();
+}
+
+var distances;
+
+function computeDistances()
+{
+	distances = {};
+
+	// init
+
+	for(let h in matrix)
+	{
+		distances[h] = 1;
+	}
+
+	for(let i of indices)
+	{
+		distances[hash([i,i])] = 0;
+	}
+
+	// Rec
+
+	for(let iter = 0; iter < 3; iter++)
+	{
+		for(let i of indices)
+		{
+			for(let j of indices)
+			{
+				if (i == j)
+					continue;
+
+				let current = distances[hash([i,j])];
+
+				if(current == null)
+					current = Infinity;
+
+				for(let k of indices)
+				{
+					let first = distances[hash([i,k])];
+					let second = distances[hash([k,j])];
+
+					if(first != null && second != null && first + second < current)
+					{
+						current = first + second;
+					}
+				}
+
+				distances[hash([i,j])] = current;
+			}
+		}
+	}
+
+	console.log(distances);
 }
 
 function randomPoint()
@@ -116,13 +176,10 @@ function iterate()
 
 			let f = 0;
 
-			if(neighbours(i,j))
+			let dist = distance(i,j);
+			if (dist < Infinity)
 			{
-				f = - K * (d - L);
-			}
-			else
-			{
-				f = 20 * K / d;
+				f = - K * (d - dist * L);
 			}
 
 			fx -= f * dx/d;
@@ -228,7 +285,7 @@ function setup3D()
 {
 	let params = {canvas: document.getElementById("3ddrawing"), antialias: true};
 	renderer = new THREE.WebGLRenderer(params);
-	renderer.setSize(400, 400);
+	renderer.setSize(800, 800);
 
 	sphereGeom = new THREE.SphereGeometry(5, 32, 32);
 	material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
@@ -247,7 +304,7 @@ function prepareSimulation3D()
 	spheres = {};
 
 	scene =	new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(75, 1, 0.1, 10000);
 	scene.add(camera);
 
 	var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -289,7 +346,7 @@ function iterate3D()
 
 	for(let i of indices)
 	{
-		let f = new THREE.Vector3();
+		forces[i] = new THREE.Vector3();
 
 		for(let j of indices)
 		{
@@ -299,27 +356,21 @@ function iterate3D()
 			let a = spheres[i].position;
 			let b = spheres[j].position;
 
-			let delta = b.clone().sub(a);
-			let d = delta.length();
-			delta.normalize();
-
-			let intensity = 0;
-
-			if(neighbours(i,j))
+			let dist = distance(i,j);
+			if (dist < Infinity)
 			{
-				intensity = - K * (d - L);
+				let delta = b.clone().sub(a);
+				let d = delta.length();
+				delta.normalize();
+
+				let intensity = 0;
+
+				intensity = - K * (d - dist * L);
+				
+				delta.multiplyScalar(intensity).negate();
+				forces[i].add(delta);
 			}
-			else
-			{
-				intensity = 40 * K / d;
-			}
-
-			delta.multiplyScalar(intensity).negate();
-
-			f.add(delta);
-		}
-
-		forces[i] = f;
+		}		
 	}
 
 	// Apply
